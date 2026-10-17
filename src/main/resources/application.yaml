@@ -34,17 +34,13 @@ spring:
             - id: billing-route
               uri: lb://billing
               predicates:
-                - Path=/api/v1/customers/me/orders/{orderId}/invoice,/api/v1/orders/{orderId}/invoice
-                - Method=GET,POST
-            - id: billing-credit-cards-route
-              uri: lb://billing
-              predicates:
-                - Path=/api/v1/customers/me/credit-cards/**
-                - Method=GET,POST,DELETE
+                - Path=/api/v1/customers/me/orders/{orderId}/invoice,/api/v1/orders/{orderId}/invoice,/api/v1/customers/me/credit-cards,/api/v1/customers/me/credit-cards/{creditCardId}
+                - Method=GET,POST,PUT,DELETE,OPTIONS
             - id: ordering-route
               uri: lb://ordering
               predicates:
-                - Path=/api/v1/orders/**,/api/v1/customers/**
+                - Path=/api/v1/orders/**,/api/v1/customers/**,/api/v1/shipping-cost-previews
+                - Method=GET,POST,PUT,DELETE,OPTIONS
             - id: product-catalog-route
               uri: lb://product-catalog
               predicates:
@@ -55,17 +51,21 @@ spring:
               predicates:
                 - Path=/products/**
               filters:
-                - RewritePath=/products/?(?<segment>.*), /api/v1/products$\{segment}
+                - RewritePath=/products/?(?<segment>.*), /api/v1/products${segment}
                 - AddResponseHeader=X-Path-rewrite-info, Path have been rewrite to /api/v1/products
+              metadata:
+                response-timeout: 1000
+                connect-timeout: 1000
             - id: user-management-route
               uri: lb://authorization-server
               predicates:
                 - Path=/api/v1/users/**
+                - Method=GET,POST,PUT,DELETE,OPTIONS
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://algashop-service-registry:8761/eureka
     registerWithEureka: false
     fetchRegistry: true
 
