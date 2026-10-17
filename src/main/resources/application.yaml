@@ -36,6 +36,11 @@ spring:
               predicates:
                 - Path=/api/v1/customers/me/orders/{orderId}/invoice,/api/v1/orders/{orderId}/invoice
                 - Method=GET,POST
+            - id: billing-credit-cards-route
+              uri: lb://billing
+              predicates:
+                - Path=/api/v1/customers/me/credit-cards/**
+                - Method=GET,POST,DELETE
             - id: ordering-route
               uri: lb://ordering
               predicates:
