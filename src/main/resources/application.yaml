@@ -34,8 +34,8 @@ spring:
             - id: billing-route
               uri: lb://billing
               predicates:
-                - Path=/api/v1/customers/me/orders/{orderId}/invoice
-                - Method=GET
+                - Path=/api/v1/customers/me/orders/{orderId}/invoice,/api/v1/orders/{orderId}/invoice
+                - Method=GET,POST
             - id: ordering-route
               uri: lb://ordering
               predicates:
